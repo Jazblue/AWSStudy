@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS Solutions Architect Quiz, 65 Questions</title>
+  <style>
+    :root {
+      --bg: #0a1020;
+      --panel: #131a2f;
+      --panel-2: #1b2647;
+      --text: #eef2ff;
+      --muted: #aab6d3;
+      --accent: #7c9cff;
+      --good: #35c36b;
+      --bad: #ff6b6b;
+      --border: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #172751 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 40px; }
+    .panel {
+      background: rgba(19, 26, 47, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    }
+    h1 { margin: 8px 0 10px; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; }
+    .sub, .muted { color: var(--muted); line-height: 1.6; }
+    .eyebrow {
+      display: inline-block;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(124,156,255,0.14);
+      border: 1px solid rgba(124,156,255,0.2);
+      color: #cfdaff;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+    .stat {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .stat .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat .v { margin-top: 8px; font-size: 24px; font-weight: 800; }
+    .controls { margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap; }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font: inherit;
+      cursor: pointer;
+    }
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .primary { background: linear-gradient(135deg, #7c9cff, #8f78ff); color: white; font-weight: 700; }
+    .secondary { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+    .quiz { margin-top: 20px; display: none; }
+    .quiz.show { display: block; }
+    .pill {
+      display: inline-block;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(124,156,255,0.12);
+      border: 1px solid rgba(124,156,255,0.18);
+      color: #cfdaff;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+    .progress { height: 10px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin-bottom: 20px; }
+    .progress > div { height: 100%; width: 0%; background: linear-gradient(135deg, #7c9cff, #35c36b); transition: width 0.2s ease; }
+    .question { font-size: 24px; line-height: 1.45; margin-bottom: 18px; }
+    .options { display: grid; gap: 12px; }
+    .option {
+      width: 100%;
+      text-align: left;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 15px 16px;
+    }
+    .option .letter {
+      min-width: 32px; height: 32px; border-radius: 999px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.08); font-weight: 800;
+    }
+    .option.correct { background: rgba(53,195,107,0.14); border-color: rgba(53,195,107,0.6); }
+    .option.wrong { background: rgba(255,107,107,0.14); border-color: rgba(255,107,107,0.55); }
+    .answer-box {
+      margin-top: 18px;
+      display: none;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .answer-box.show { display: block; }
+    .answer-box h3 { margin: 0 0 10px; font-size: 20px; }
+    .answer-box.good h3 { color: var(--good); }
+    .answer-box.bad h3 { color: var(--bad); }
+    .answer-line { font-weight: 700; margin-bottom: 10px; }
+    .nav { margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .results { display: none; margin-top: 22px; }
+    .results.show { display: block; }
+    .review { margin-top: 16px; padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
+    .review h4 { margin: 0 0 8px; }
+    .review p { margin: 8px 0 0; color: var(--muted); line-height: 1.6; }
+    .empty { margin-top: 20px; padding: 40px 18px; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 20px; }
+    @media (max-width: 720px) { .top-grid { grid-template-columns: 1fr; } .question { font-size: 21px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel">
+      <div class="eyebrow">Single-question mode • max 65 • clear answers</div>
+      <h1>AWS Solutions Architect quiz</h1>
+      <p class="sub">This version stays focused. One question on screen at a time, 65 total questions max, then a review of anything you missed.</p>
+
+      <div class="top-grid">
+        <div class="stat"><div class="k">Question bank</div><div class="v">65</div></div>
+        <div class="stat"><div class="k">Format</div><div class="v">A/B/C/D + explanation</div></div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="startBtn">Start 65-question quiz</button>
+        <button class="secondary" id="restartBtn">Restart</button>
+      </div>
+
+      <div id="empty" class="empty">Press start and I’ll show one question at a time.</div>
+
+      <div id="quiz" class="quiz">
+        <div class="pill" id="meta">Question 1 of 65</div>
+        <div class="progress"><div id="bar"></div></div>
+        <div id="question" class="question"></div>
+        <div id="options" class="options"></div>
+
+        <div id="answerBox" class="answer-box">
+          <h3 id="answerHeading"></h3>
+          <div id="answerLine" class="answer-line"></div>
+          <div id="explanation" class="muted"></div>
+        </div>
+
+        <div class="nav">
+          <button class="primary" id="nextBtn" disabled>Next question</button>
+        </div>
+      </div>
+
+      <div id="results" class="results"></div>
+    </section>
+  </div>
+
+  <script>
+    const QUESTIONS = [{"id": 1, "domain": "Resilient architectures", "question": "A web application runs on EC2 instances in an Auto Scaling group behind an Application Load Balancer across multiple Availability Zones. Users are being logged out when requests are served by a different instance. The company wants to keep the design highly available and minimize operational overhead. What should a solutions architect do?", "options": ["Store session data on each instance's EBS volume", "Store session state in Amazon ElastiCache for Redis", "Mount Amazon EFS and write sessions to the shared file system", "Enable ALB sticky sessions as the long-term fix"], "answer": 1, "explanation": "ElastiCache for Redis externalizes session state, keeps the fleet stateless, and works cleanly across instances and AZs."}, {"id": 2, "domain": "Storage", "question": "A company must retain backup files for 7 years at the lowest possible cost. The files are rarely accessed, and retrieval can take several hours. Which S3 storage class is the best fit?", "options": ["S3 Standard", "S3 Intelligent-Tiering", "S3 Glacier Flexible Retrieval", "S3 Standard-IA"], "answer": 2, "explanation": "S3 Glacier Flexible Retrieval is designed for low-cost archival when access is rare and retrieval in hours is acceptable."}, {"id": 3, "domain": "Databases", "question": "A critical application needs a relational database that is highly available across Availability Zones and can fail over automatically with minimal application changes. Which option should be selected?", "options": ["Run MySQL on a single EC2 instance and back it up nightly", "Use Amazon RDS with Multi-AZ deployment", "Use Amazon DynamoDB with on-demand capacity", "Use Amazon Redshift with snapshots enabled"], "answer": 1, "explanation": "RDS Multi-AZ provides synchronous standby replication and automatic failover with minimal application changes."}, {"id": 4, "domain": "Databases", "question": "An ecommerce platform needs to store shopping cart metadata for millions of users. Traffic is unpredictable, latency must stay in the single-digit millisecond range, and the team wants to avoid capacity planning. Which service is the best fit?", "options": ["Amazon RDS for MySQL", "Amazon DynamoDB with on-demand capacity", "Amazon Aurora Serverless v2", "Amazon ElastiCache for Memcached"], "answer": 1, "explanation": "DynamoDB on-demand is ideal for unpredictable traffic, low-latency key-value access, and minimal operational overhead."}, {"id": 5, "domain": "Storage", "question": "A company is migrating an on-premises Linux application that writes to an NFS share. The application will move to AWS with minimal code changes and still needs a managed shared POSIX file system. Which solution is best?", "options": ["Amazon EFS with AWS DataSync", "Amazon S3 with Transfer Acceleration", "Amazon FSx for Windows File Server", "Amazon EBS Multi-Attach"], "answer": 0, "explanation": "Amazon EFS provides a managed NFS-compatible shared file system, and AWS DataSync simplifies migration from on premises."}, {"id": 6, "domain": "Edge and networking", "question": "A company is launching a global static website and wants low latency, HTTPS support, and protection so users cannot access the S3 bucket directly. Which architecture is best?", "options": ["S3 website endpoint only", "S3 with CloudFront and Origin Access Control", "EFS with an Application Load Balancer", "EC2 instances with an internet-facing Network Load Balancer"], "answer": 1, "explanation": "CloudFront in front of S3 with Origin Access Control provides global caching, HTTPS, and blocks direct bucket access."}, {"id": 7, "domain": "Security", "question": "An application in Account A must read objects from an S3 bucket in Account B. The company wants to avoid long-lived access keys. What is the most secure solution?", "options": ["Create an IAM user in Account B and store its keys in the application", "Use an IAM role in Account B that the application assumes from Account A", "Copy the bucket into Account A every hour", "Make the bucket public and restrict access by object prefix"], "answer": 1, "explanation": "Cross-account role assumption with STS provides temporary credentials and avoids long-lived access keys."}, {"id": 8, "domain": "Integration", "question": "A retailer processes orders asynchronously. Messages for the same customer must stay in order, but messages for different customers can be processed in parallel. Which service should be used?", "options": ["Amazon SQS Standard queue", "Amazon SQS FIFO queue with customer-based message group IDs", "Amazon SNS topic", "Amazon EventBridge bus"], "answer": 1, "explanation": "An SQS FIFO queue preserves order within each message group while allowing parallelism across groups."}, {"id": 9, "domain": "Analytics", "question": "A data team stores petabytes of log data in Amazon S3 and wants to run ad hoc SQL queries without provisioning servers or loading the data into a database first. Which service is the best fit?", "options": ["Amazon Athena", "Amazon RDS", "Amazon EMR on EC2 only", "Amazon QuickSight"], "answer": 0, "explanation": "Athena runs serverless SQL queries directly against data in S3."}, {"id": 10, "domain": "Security", "question": "A company wants database credentials for an application to rotate automatically without custom code. The credentials are used by Amazon RDS. Which service should manage them?", "options": ["AWS Systems Manager Parameter Store, standard tier", "AWS KMS", "AWS Secrets Manager", "Amazon Cognito"], "answer": 2, "explanation": "Secrets Manager natively supports secret rotation for services such as RDS."}, {"id": 11, "domain": "Networking", "question": "A highly available application runs in private subnets across two Availability Zones and needs outbound internet access for software updates. Which design best balances resilience and AWS best practice?", "options": ["One NAT gateway in one AZ for both private subnets", "One NAT gateway in each AZ with each private subnet routing to its local NAT gateway", "An internet gateway attached directly to the private subnets", "A bastion host in a public subnet for outbound internet access"], "answer": 1, "explanation": "Using a NAT gateway per AZ avoids an AZ-level single point of failure and follows AWS resiliency guidance."}, {"id": 12, "domain": "Containers", "question": "An ECS service on AWS Fargate runs multiple tasks across Availability Zones. Each task must access the same shared file data. Which storage option should be used?", "options": ["Instance store", "Amazon EBS", "Amazon EFS", "Amazon S3 Glacier Instant Retrieval"], "answer": 2, "explanation": "Amazon EFS provides shared managed storage that can be mounted by multiple ECS tasks across AZs."}, {"id": 13, "domain": "Databases", "question": "A global application needs a managed relational database with fast local reads in secondary Regions and cross-Region disaster recovery with low replication lag. Which option is best?", "options": ["Amazon RDS read replicas in the same Region", "Amazon Aurora Global Database", "Amazon DynamoDB global tables", "Amazon Redshift RA3"], "answer": 1, "explanation": "Aurora Global Database is purpose-built for cross-Region disaster recovery and low-latency regional reads."}, {"id": 14, "domain": "Networking", "question": "A company hosts applications in multiple AWS Regions and wants users routed to the Region with the lowest latency, but only if that Region is healthy. Which Route 53 configuration should be used?", "options": ["Weighted routing only", "Latency-based routing with health checks", "Simple routing", "Multivalue answer routing without health checks"], "answer": 1, "explanation": "Latency-based routing chooses the best Region, and health checks prevent routing to unhealthy endpoints."}, {"id": 15, "domain": "Security", "question": "A compliance team needs audit logs stored in S3 so that even administrators cannot delete or overwrite them during the retention period. Which feature should be enabled?", "options": ["S3 Versioning", "S3 Object Lock in compliance mode", "S3 Lifecycle policies", "S3 Transfer Acceleration"], "answer": 1, "explanation": "S3 Object Lock in compliance mode enforces WORM retention, including against privileged users."}, {"id": 16, "domain": "Storage", "question": "A company creates monthly EBS snapshots for compliance and rarely restores them. It wants to lower storage costs for older snapshots without deleting them. What should it do?", "options": ["Convert the snapshots to AMIs", "Move older snapshots to the EBS Snapshot Archive tier", "Copy the snapshots to S3 Standard-IA", "Export the snapshots to Glacier Deep Archive manually"], "answer": 1, "explanation": "The EBS Snapshot Archive tier reduces cost for infrequently restored snapshots while keeping them managed by AWS."}, {"id": 17, "domain": "Security", "question": "A browser-based application must let users upload large files directly to Amazon S3 without exposing AWS credentials. Which approach should be used?", "options": ["Proxy all uploads through a single EC2 instance", "Generate S3 presigned URLs", "Store an IAM access key in the JavaScript code", "Open the bucket to public writes"], "answer": 1, "explanation": "Presigned URLs allow temporary, scoped upload access directly to S3 without exposing credentials."}, {"id": 18, "domain": "Hybrid", "question": "A company wants resources in a VPC to resolve on-premises DNS names, and on-premises systems must resolve private Route 53 hosted zone names in AWS. Which architecture should be used?", "options": ["Route 53 public hosted zones only", "Route 53 Resolver inbound and outbound endpoints", "Amazon CloudFront with custom origins", "AWS Global Accelerator"], "answer": 1, "explanation": "Route 53 Resolver inbound and outbound endpoints enable hybrid DNS resolution between on premises and AWS."}, {"id": 19, "domain": "Security", "question": "A company wants customer-managed encryption keys for S3 and EBS, with centralized key management and automatic annual rotation. Which service should be used?", "options": ["AWS Certificate Manager", "AWS KMS customer managed keys", "AWS Secrets Manager", "CloudHSM only"], "answer": 1, "explanation": "AWS KMS customer managed keys support centralized key management and automatic rotation."}, {"id": 20, "domain": "Integration", "question": "An application must publish a message once and fan it out to multiple subscribers, including SQS queues, Lambda functions, and HTTPS endpoints. Which service is the simplest fit?", "options": ["Amazon SNS", "Amazon MQ", "Amazon Kinesis Data Streams", "AWS Step Functions"], "answer": 0, "explanation": "Amazon SNS is a managed pub/sub service designed for fan-out to multiple subscriber types."}, {"id": 21, "domain": "Edge and networking", "question": "A global content site needs low latency and wants to cache responses at edge locations while varying content by viewer cookies and headers. Which service should be used?", "options": ["AWS Global Accelerator", "Amazon CloudFront", "Elastic Load Balancing only", "Route 53 geolocation routing only"], "answer": 1, "explanation": "CloudFront caches content at edge locations and can vary cache behavior by cookies and headers."}, {"id": 22, "domain": "Storage", "question": "A Windows-based application requires a fully managed SMB file share with support for Active Directory integration and Windows file system features. Which service is best?", "options": ["Amazon EFS", "Amazon FSx for Windows File Server", "Amazon S3", "Amazon EBS Multi-Attach"], "answer": 1, "explanation": "FSx for Windows File Server is purpose-built for managed SMB workloads and Windows integrations."}, {"id": 23, "domain": "Compute", "question": "A team wants to run containerized microservices without managing EC2 instances or cluster capacity. Which option is the simplest operationally?", "options": ["Amazon ECS on EC2", "Amazon EKS on EC2", "AWS Fargate", "AWS Lambda with container images for all workloads"], "answer": 2, "explanation": "AWS Fargate removes server management and capacity planning for supported container workloads."}, {"id": 24, "domain": "Analytics", "question": "A company is building a data lake in S3 and wants centralized governance with fine-grained permissions across services such as Athena and EMR. Which service should be used?", "options": ["AWS Lake Formation", "AWS Glue DataBrew", "Amazon QuickSight", "AWS Batch"], "answer": 0, "explanation": "Lake Formation provides centralized governance and fine-grained access control for data lakes in S3."}, {"id": 25, "domain": "Storage", "question": "A company stores critical files in S3 and needs them automatically replicated to another Region for disaster recovery. Which feature should be enabled?", "options": ["S3 Same-Region Replication", "S3 Cross-Region Replication", "S3 Transfer Acceleration", "S3 Batch Operations"], "answer": 1, "explanation": "S3 Cross-Region Replication automatically replicates objects to a bucket in another Region."}, {"id": 26, "domain": "Networking", "question": "Instances in private subnets need private connectivity to Amazon S3 without using a NAT gateway. Which solution should be implemented?", "options": ["An internet gateway", "A gateway VPC endpoint for S3", "An interface VPC endpoint for S3 only", "A public Network Load Balancer"], "answer": 1, "explanation": "S3 uses a gateway VPC endpoint, which provides private access without NAT or internet traversal."}, {"id": 27, "domain": "Networking", "question": "A private application in a VPC needs to call AWS Secrets Manager without traversing the public internet. Which solution should be used?", "options": ["A gateway endpoint", "An interface VPC endpoint", "A NAT instance", "An internet gateway"], "answer": 1, "explanation": "Secrets Manager is accessed privately through an interface VPC endpoint powered by AWS PrivateLink."}, {"id": 28, "domain": "Compute", "question": "A company runs fault-tolerant batch processing jobs that can tolerate interruptions. It wants the lowest compute cost while still meeting deadlines. Which approach is best?", "options": ["Use only On-Demand Instances", "Use Spot Instances, optionally with diversification or mixed capacity", "Use Dedicated Hosts", "Use Reserved Instances for all capacity, even short-lived jobs"], "answer": 1, "explanation": "Spot Instances are ideal for interruptible, fault-tolerant batch jobs and offer the lowest cost."}, {"id": 29, "domain": "Migration", "question": "A company is migrating from on-premises Oracle to Amazon Aurora PostgreSQL with minimal downtime. Schema conversion is required before ongoing replication. Which approach should be used?", "options": ["AWS DataSync only", "AWS Schema Conversion Tool plus AWS Database Migration Service", "AWS Snowball Edge only", "Amazon Inspector plus AWS Backup"], "answer": 1, "explanation": "SCT converts heterogeneous schemas, and DMS handles ongoing replication with minimal downtime."}, {"id": 30, "domain": "Databases", "question": "Developers frequently need full copies of an Amazon Aurora production database for testing. They want the clones created quickly without duplicating all underlying storage immediately. Which feature should they use?", "options": ["Manual snapshot restore", "Aurora fast database cloning", "Read replicas", "AWS Backup vault copies"], "answer": 1, "explanation": "Aurora cloning creates a copy-on-write clone quickly and space efficiently."}, {"id": 31, "domain": "Integration", "question": "A payment pipeline must preserve message ordering and deduplicate retries as much as possible. Which service is the best managed fit?", "options": ["Amazon SQS FIFO", "Amazon SQS Standard", "Amazon SNS standard topic", "Amazon EventBridge default bus"], "answer": 0, "explanation": "SQS FIFO supports ordered delivery and deduplication features that suit payment-style workflows."}, {"id": 32, "domain": "Security", "question": "A public web application needs protection from common exploits such as SQL injection and cross-site scripting, and it must block clients that exceed request rate thresholds. Which service should be added?", "options": ["AWS Shield Standard only", "AWS WAF", "AWS Firewall Manager only", "Amazon GuardDuty"], "answer": 1, "explanation": "AWS WAF provides managed rule groups and rate-based rules for web application protection."}, {"id": 33, "domain": "Governance", "question": "A company wants to prevent member accounts in an AWS Organization from launching resources outside approved Regions, even if administrators in those accounts have broad IAM permissions. Which control should be used?", "options": ["Identity-based IAM policies in each account", "Service control policies in AWS Organizations", "Security groups", "NACLs"], "answer": 1, "explanation": "Service control policies apply guardrails across accounts and can restrict actions regardless of local IAM admin permissions."}, {"id": 34, "domain": "Governance", "question": "A security team wants a centralized log of all AWS API activity across every account in an organization. Which solution is best?", "options": ["Enable VPC Flow Logs in each account", "Create an organization trail in AWS CloudTrail", "Enable AWS Config only", "Use Amazon CloudWatch dashboards"], "answer": 1, "explanation": "An organization trail in CloudTrail captures API activity across the organization centrally."}, {"id": 35, "domain": "Security", "question": "A company wants to ensure that no S3 bucket in an account can accidentally become publicly accessible. Which setting should be enabled?", "options": ["Bucket versioning", "Account-level S3 Block Public Access", "S3 Inventory", "Requester Pays"], "answer": 1, "explanation": "S3 Block Public Access at the account level prevents accidental public exposure of buckets and objects."}, {"id": 36, "domain": "Operations", "question": "Administrators need shell access to private EC2 instances without opening inbound SSH ports or deploying bastion hosts. Which AWS service should they use?", "options": ["AWS Systems Manager Session Manager", "Amazon WorkSpaces", "EC2 Instance Connect Endpoint with public security group rules", "AWS VPN Client"], "answer": 0, "explanation": "Session Manager provides secure shell access without inbound ports or bastion hosts."}, {"id": 37, "domain": "Compute", "question": "A company wants to deploy a new AWS Lambda version to 10% of traffic first and then gradually increase traffic if metrics stay healthy. Which feature should be used?", "options": ["Lambda reserved concurrency", "Lambda aliases with weighted routing", "Lambda destinations", "SQS event source mapping"], "answer": 1, "explanation": "Lambda aliases support weighted traffic shifting between versions for canary-style deployments."}, {"id": 38, "domain": "Governance", "question": "A compliance team needs to continuously evaluate AWS resource configurations against rules and detect drift from required settings. Which service should be used?", "options": ["AWS Config", "Amazon Inspector", "Amazon Macie", "AWS Artifact"], "answer": 0, "explanation": "AWS Config records resource configuration changes and evaluates them against compliance rules."}, {"id": 39, "domain": "Backup and DR", "question": "A company wants centrally managed backup policies for multiple accounts and services, with cross-Region backup copies for disaster recovery. Which service is best?", "options": ["Amazon S3 Lifecycle", "AWS Backup", "Amazon Data Lifecycle Manager", "CloudEndure Migration"], "answer": 1, "explanation": "AWS Backup centralizes backup policies and supports cross-Region copies for supported resources."}, {"id": 40, "domain": "Storage", "question": "A high-performance computing workload on Linux needs a shared file system with very high throughput and low latency, and it will process data stored in S3. Which service is the best fit?", "options": ["Amazon EFS", "Amazon FSx for Lustre", "Amazon FSx for Windows File Server", "Amazon S3 Standard"], "answer": 1, "explanation": "FSx for Lustre is optimized for HPC workloads and integrates with S3."}, {"id": 41, "domain": "Hybrid", "question": "A company needs private connectivity from its data center to AWS with consistent throughput. It also wants encrypted failover if the primary connection drops. Which solution should be used?", "options": ["Site-to-Site VPN only", "AWS Direct Connect with a Site-to-Site VPN backup", "Internet gateway with IP allowlisting", "Amazon CloudFront"], "answer": 1, "explanation": "Direct Connect provides consistent private connectivity, and VPN is a common encrypted failover path."}, {"id": 42, "domain": "Networking", "question": "A company needs to load balance TCP traffic to EC2 instances while preserving static IP addresses and very high performance. Which load balancer should be used?", "options": ["Application Load Balancer", "Network Load Balancer", "Gateway Load Balancer", "Classic Load Balancer"], "answer": 1, "explanation": "Network Load Balancer is designed for Layer 4 traffic, high performance, and static IP support."}, {"id": 43, "domain": "Networking", "question": "A company wants to inspect and filter outbound and east-west traffic centrally across multiple VPCs attached to a hub-and-spoke network. Which architecture is most appropriate?", "options": ["Peering every VPC with every other VPC", "AWS Transit Gateway with AWS Network Firewall in a centralized inspection VPC", "An ALB in each VPC", "Route 53 private hosted zones"], "answer": 1, "explanation": "Transit Gateway plus centralized Network Firewall provides scalable multi-VPC routing and inspection."}, {"id": 44, "domain": "Networking", "question": "An organization has dozens of VPCs and wants scalable connectivity without managing a full mesh of VPC peering connections. Which service should it use?", "options": ["VPC peering between every pair of VPCs", "AWS Transit Gateway", "AWS Global Accelerator", "Amazon CloudFront"], "answer": 1, "explanation": "Transit Gateway simplifies connectivity among many VPCs with hub-and-spoke routing."}, {"id": 45, "domain": "Caching", "question": "A mission-critical application needs an in-memory cache that supports automatic failover, replication, and persistence options. Which service should be selected?", "options": ["Amazon ElastiCache for Redis", "Amazon ElastiCache for Memcached", "Amazon SQS", "Amazon DynamoDB Accelerator only"], "answer": 0, "explanation": "Redis supports replication groups, Multi-AZ failover, and persistence features."}, {"id": 46, "domain": "Databases", "question": "A team wants a MySQL-compatible managed relational database with multiple reader instances, rapid failover, and storage that automatically scales as data grows. Which service is best?", "options": ["Amazon Aurora MySQL-Compatible Edition", "Amazon RDS for MariaDB single-AZ", "Amazon DynamoDB", "Amazon Neptune"], "answer": 0, "explanation": "Aurora offers MySQL compatibility, reader scaling, fast failover, and auto-scaling distributed storage."}, {"id": 47, "domain": "Databases", "question": "A development team wants a managed database that is compatible with MongoDB APIs for document workloads. Which service should be used?", "options": ["Amazon DocumentDB", "Amazon DynamoDB", "Amazon Aurora PostgreSQL", "Amazon Neptune"], "answer": 0, "explanation": "Amazon DocumentDB is designed for document workloads and MongoDB compatibility."}, {"id": 48, "domain": "Databases", "question": "An application must analyze complex relationships among users, products, and recommendations using graph queries. Which AWS database is the best fit?", "options": ["Amazon Redshift", "Amazon Neptune", "Amazon Timestream", "Amazon ElastiCache"], "answer": 1, "explanation": "Neptune is purpose-built for graph workloads and relationship-heavy queries."}, {"id": 49, "domain": "Analytics", "question": "A company needs a managed data warehouse for complex analytical queries across structured data at petabyte scale. Which service should it choose?", "options": ["Amazon Athena", "Amazon Redshift", "Amazon RDS for PostgreSQL", "Amazon OpenSearch Service"], "answer": 1, "explanation": "Amazon Redshift is AWS's managed data warehouse for large-scale analytics."}, {"id": 50, "domain": "Databases", "question": "A company collects billions of timestamped application metrics and wants a managed database optimized for time-series data and retention policies. Which service is the best fit?", "options": ["Amazon Timestream", "Amazon Neptune", "Amazon Aurora", "Amazon S3 Select"], "answer": 0, "explanation": "Amazon Timestream is purpose-built for time-series workloads such as metrics and events."}, {"id": 51, "domain": "Integration", "question": "A Lambda function processes messages from a queue. Failed messages must not block the rest of the workload and must be retained for troubleshooting. Which design should be used?", "options": ["Use an SQS queue with a dead-letter queue", "Use SNS only", "Retry forever in the Lambda function", "Write failures to instance store"], "answer": 0, "explanation": "An SQS dead-letter queue isolates poison messages so normal processing can continue."}, {"id": 52, "domain": "Integration", "question": "A business process spans multiple microservices, needs retries and branching logic, and includes a human approval step. Which service should orchestrate it?", "options": ["Amazon EventBridge", "AWS Step Functions", "Amazon SQS", "Amazon MQ"], "answer": 1, "explanation": "Step Functions is designed for workflow orchestration with retries, branching, and service integrations."}, {"id": 53, "domain": "Streaming", "question": "An application ingests a continuous stream of click events that must be consumed by multiple applications in near real time. Which service should be used?", "options": ["Amazon Kinesis Data Streams", "Amazon SQS FIFO", "Amazon SNS", "Amazon Athena"], "answer": 0, "explanation": "Kinesis Data Streams is built for durable, scalable, near-real-time event streaming with multiple consumers."}, {"id": 54, "domain": "Streaming", "question": "A company wants to deliver application logs from thousands of sources to Amazon S3 with minimal management and optional transformation. Which service is the best fit?", "options": ["Amazon Kinesis Data Firehose", "Amazon Kinesis Data Streams only", "Amazon MQ", "AWS DataSync"], "answer": 0, "explanation": "Kinesis Data Firehose is managed delivery for streaming data to destinations such as S3."}, {"id": 55, "domain": "Operations", "question": "A company wants to roll out application configuration changes gradually, validate them with automated checks, and quickly revert if there is an issue. Which AWS service is designed for this?", "options": ["AWS AppConfig", "Amazon Inspector", "AWS Batch", "Amazon Macie"], "answer": 0, "explanation": "AWS AppConfig supports controlled configuration deployments, validation, and rollback."}, {"id": 56, "domain": "Global applications", "question": "A globally distributed application requires multi-Region, active-active writes for a key-value data store with low-latency local access in each Region. Which solution should be used?", "options": ["Amazon Aurora Global Database", "Amazon DynamoDB global tables", "Amazon RDS cross-Region read replicas", "Amazon ElastiCache Global Datastore"], "answer": 1, "explanation": "DynamoDB global tables provide managed multi-Region, active-active replication for key-value workloads."}, {"id": 57, "domain": "Security", "question": "An EC2 application needs to access an S3 bucket. The company wants to avoid storing credentials on disk or in code. What should be used?", "options": ["An IAM role attached to the EC2 instance profile", "An IAM user access key in a configuration file", "AWS account root credentials", "A presigned URL generated once and reused forever"], "answer": 0, "explanation": "An instance profile provides temporary credentials to EC2 securely through IAM roles."}, {"id": 58, "domain": "Security", "question": "A CI/CD pipeline in one AWS account must deploy infrastructure into a separate production account securely. Which design is recommended?", "options": ["Store production root credentials in the pipeline", "Use a cross-account IAM role in production that the pipeline assumes", "Make the production account resources public", "Run the pipeline manually from a developer laptop"], "answer": 1, "explanation": "A cross-account role provides least-privilege, auditable access without sharing credentials."}, {"id": 59, "domain": "Governance", "question": "A security team needs to ensure that nobody in member accounts can disable CloudTrail, even account administrators. What should the team implement?", "options": ["An SCP that denies CloudTrail modification actions", "A security group", "A VPC endpoint policy", "A bucket lifecycle policy"], "answer": 0, "explanation": "An SCP can deny CloudTrail changes across member accounts regardless of local IAM permissions."}, {"id": 60, "domain": "Security", "question": "A company wants to detect suspicious activity such as unusual API calls, credential compromise indicators, and malicious network behavior across accounts. Which service should it enable?", "options": ["Amazon GuardDuty", "AWS Artifact", "Amazon Macie", "AWS Trusted Advisor"], "answer": 0, "explanation": "GuardDuty analyzes multiple data sources to detect threats and suspicious behavior."}, {"id": 61, "domain": "Resilient architectures", "question": "A stateless web tier must survive the loss of an Availability Zone without manual intervention. Which design is best?", "options": ["One EC2 instance in one AZ with EBS snapshots", "An Auto Scaling group spanning multiple AZs behind a load balancer", "One larger EC2 instance with Auto Recovery", "One container task in one subnet"], "answer": 1, "explanation": "A multi-AZ Auto Scaling group behind a load balancer is the standard highly available design for stateless web tiers."}, {"id": 62, "domain": "Compute", "question": "A company runs a production service on Amazon ECS and wants blue-green deployments with automated traffic shifting and rollback if health checks fail. Which service should it use with ECS?", "options": ["AWS CodeDeploy", "AWS DataSync", "Amazon Athena", "Amazon Inspector"], "answer": 0, "explanation": "CodeDeploy integrates with ECS for blue-green deployments and controlled traffic shifting."}, {"id": 63, "domain": "Edge and networking", "question": "A company needs lightweight JavaScript-based request and response manipulation at CloudFront edge locations with the lowest possible latency and cost. Which option should it use?", "options": ["AWS Lambda in a Regional VPC", "Lambda@Edge", "CloudFront Functions", "AWS Step Functions"], "answer": 2, "explanation": "CloudFront Functions is optimized for lightweight edge logic at very low latency and cost."}, {"id": 64, "domain": "Edge and networking", "question": "A company needs to run more advanced code at edge locations, including modifying origin requests and using the full Node.js runtime model supported by AWS. Which service should it use?", "options": ["CloudFront Functions", "Lambda@Edge", "AWS Global Accelerator", "Route 53 Resolver"], "answer": 1, "explanation": "Lambda@Edge is used for more advanced edge compute scenarios than CloudFront Functions."}, {"id": 65, "domain": "Networking", "question": "A private application must call both public internet endpoints and several AWS services. The company wants to minimize NAT data processing charges where possible. What should it do?", "options": ["Use NAT gateways for everything", "Use VPC endpoints for supported AWS services and NAT only for true internet traffic", "Use an internet gateway from the private subnets", "Expose the instances with public IP addresses"], "answer": 1, "explanation": "VPC endpoints bypass NAT for supported AWS services, reducing cost and keeping service traffic private."}];
+    const LETTERS = ["A", "B", "C", "D"];
+
+    const state = {
+      questions: QUESTIONS,
+      index: 0,
+      score: 0,
+      answered: false,
+      wrong: []
+    };
+
+    const els = {
+      startBtn: document.getElementById('startBtn'),
+      restartBtn: document.getElementById('restartBtn'),
+      nextBtn: document.getElementById('nextBtn'),
+      empty: document.getElementById('empty'),
+      quiz: document.getElementById('quiz'),
+      results: document.getElementById('results'),
+      meta: document.getElementById('meta'),
+      bar: document.getElementById('bar'),
+      question: document.getElementById('question'),
+      options: document.getElementById('options'),
+      answerBox: document.getElementById('answerBox'),
+      answerHeading: document.getElementById('answerHeading'),
+      answerLine: document.getElementById('answerLine'),
+      explanation: document.getElementById('explanation')
+    };
+
+    function shuffled(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function resetQuiz() {
+      state.questions = shuffled(QUESTIONS);
+      state.index = 0;
+      state.score = 0;
+      state.answered = false;
+      state.wrong = [];
+      els.empty.style.display = 'none';
+      els.results.classList.remove('show');
+      els.results.innerHTML = '';
+      els.quiz.classList.add('show');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = state.questions[state.index];
+      state.answered = false;
+      els.nextBtn.disabled = true;
+      els.meta.textContent = `Question ${state.index + 1} of ${state.questions.length} • ${q.domain}`;
+      els.bar.style.width = `${(state.index / state.questions.length) * 100}%`;
+      els.question.textContent = q.question;
+      els.options.innerHTML = '';
+      els.answerBox.className = 'answer-box';
+      els.answerHeading.textContent = '';
+      els.answerLine.textContent = '';
+      els.explanation.textContent = '';
+
+      q.options.forEach((option, idx) => {
+        const button = document.createElement('button');
+        button.className = 'option';
+        button.innerHTML = `<span class="letter">${LETTERS[idx]}</span><span>${option}</span>`;
+        button.addEventListener('click', () => answer(idx));
+        els.options.appendChild(button);
+      });
+    }
+
+    function answer(choice) {
+      if (state.answered) return;
+      state.answered = true;
+      const q = state.questions[state.index];
+      const buttons = [...els.options.querySelectorAll('.option')];
+      buttons.forEach((button, idx) => {
+        button.disabled = true;
+        if (idx === q.answer) button.classList.add('correct');
+        if (idx === choice && idx !== q.answer) button.classList.add('wrong');
+      });
+
+      const correct = choice === q.answer;
+      if (correct) state.score += 1;
+      else state.wrong.push({ ...q, selected: choice });
+
+      els.answerBox.className = `answer-box show ${correct ? 'good' : 'bad'}`;
+      els.answerHeading.textContent = correct ? 'Correct' : 'Incorrect';
+      els.answerLine.textContent = `Correct answer: ${LETTERS[q.answer]}. ${q.options[q.answer]}`;
+      els.explanation.textContent = q.explanation;
+      els.nextBtn.disabled = false;
+      els.bar.style.width = `${((state.index + 1) / state.questions.length) * 100}%`;
+    }
+
+    function showResults() {
+      els.quiz.classList.remove('show');
+      const total = state.questions.length;
+      const pct = Math.round((state.score / total) * 100);
+      const intro = pct >= 85 ? 'Strong result.' : pct >= 70 ? 'Solid result.' : pct >= 55 ? 'Decent base, but patch the weak spots.' : 'Worth a focused second pass.';
+      const wrongHtml = state.wrong.length
+        ? state.wrong.map(item => `
+            <div class="review">
+              <h4>Q${item.id}</h4>
+              <p><strong>Question:</strong> ${item.question}</p>
+              <p><strong>Your answer:</strong> ${LETTERS[item.selected]}. ${item.options[item.selected]}</p>
+              <p><strong>Correct answer:</strong> ${LETTERS[item.answer]}. ${item.options[item.answer]}</p>
+              <p><strong>Explanation:</strong> ${item.explanation}</p>
+            </div>
+          `).join('')
+        : '<div class="review"><h4>Perfect run</h4><p>You got all 65 right. That is properly strong.</p></div>';
+
+      els.results.innerHTML = `
+        <div class="pill">Quiz complete</div>
+        <div class="question" style="margin-bottom:10px;">Score: ${state.score}/${total} (${pct}%)</div>
+        <p class="muted">${intro}</p>
+        <div class="controls">
+          <button class="primary" id="againBtn">Run it again</button>
+        </div>
+        ${wrongHtml}
+      `;
+      els.results.classList.add('show');
+      document.getElementById('againBtn').addEventListener('click', resetQuiz);
+    }
+
+    els.startBtn.addEventListener('click', resetQuiz);
+    els.restartBtn.addEventListener('click', resetQuiz);
+    els.nextBtn.addEventListener('click', () => {
+      if (state.index >= state.questions.length - 1) {
+        showResults();
+        return;
+      }
+      state.index += 1;
+      renderQuestion();
+    });
+  </script>
+</body>
+</html>

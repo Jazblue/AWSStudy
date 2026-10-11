@@ -1,9 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AWS Solutions Architect Practice Quiz | 65 Questions">
+    <meta property="og:description" content="Test your AWS Solutions Architect knowledge with a 65-question practice quiz covering AWS architecture concepts, services, security, reliability, and cost optimisation.">
+    <meta property="og:url" content="https://jazblue.github.io/AWSStudy/">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="https://jazblue.github.io/AWSStudy/">
+    <meta name="description" content="Test your AWS Solutions Architect knowledge with a 65-question practice quiz covering AWS architecture concepts, services, security, reliability, and cost optimisation.">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AWS Solutions Architect Quiz, 65 Questions</title>
+  <title>AWS Solutions Architect Practice Quiz | 65 Questions</title>
   <style>
     :root {
       --bg: #0a1020;
@@ -127,7 +134,7 @@
 <body>
   <div class="wrap">
     <section class="panel">
-      <div class="eyebrow">Single-question mode • max 65 • clear answers</div>
+      <div class="eyebrow">Single-question mode â¢ max 65 â¢ clear answers</div>
       <h1>AWS Solutions Architect quiz</h1>
       <p class="sub">This version stays focused. One question on screen at a time, 65 total questions max, then a review of anything you missed.</p>
 
@@ -141,7 +148,7 @@
         <button class="secondary" id="restartBtn">Restart</button>
       </div>
 
-      <div id="empty" class="empty">Press start and I’ll show one question at a time.</div>
+      <div id="empty" class="empty">Press start and Iâll show one question at a time.</div>
 
       <div id="quiz" class="quiz">
         <div class="pill" id="meta">Question 1 of 65</div>
@@ -219,7 +226,7 @@
       const q = state.questions[state.index];
       state.answered = false;
       els.nextBtn.disabled = true;
-      els.meta.textContent = `Question ${state.index + 1} of ${state.questions.length} • ${q.domain}`;
+      els.meta.textContent = `Question ${state.index + 1} of ${state.questions.length} â¢ ${q.domain}`;
       els.bar.style.width = `${(state.index / state.questions.length) * 100}%`;
       els.question.textContent = q.question;
       els.options.innerHTML = '';
@@ -310,7 +317,7 @@
      
 </ul>
 
-  <p style="margin-top:14px;color:#666;font-size:13px;">Visitors: <span id="visitor-count">loading…</span></p>
+  <p style="margin-top:14px;color:#666;font-size:13px;">Visitors: <span id="visitor-count">loadingâ¦</span></p>
   <script src="counter.js"></script>
 </body>
 </html>
